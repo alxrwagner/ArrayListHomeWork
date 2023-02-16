@@ -13,29 +13,59 @@ public class Main {
         arr.add("Gott");
 
         StringList arr2 = new DynamicArray();
-        arr.add("Hello");
-        arr.add("World");
-        arr.add("Mein");
-        arr.add("Gott");
+        arr2.add("Hello");
+        arr2.add("World");
+        arr2.add("Mein");
+        arr2.add("Gott");
 
-        arr.add(1, "Morgan");
-        System.out.println(arr);
-        arr.set(0, "Guten");
-        System.out.println(arr);
-        arr.remove("Guten");
-        System.out.println(arr);
-        arr.remove(0);
-        System.out.println(arr);
-        System.out.println(arr.contains("World"));
-        System.out.println(arr.indexOf("World"));
-        arr.lastIndexOf("World");
-        System.out.println(arr.get(1));
-        System.out.println(arr.equals(arr2));
-        System.out.println(arr.size());
-        System.out.println(arr.isEmpty());
-        System.out.println(arr.toArray());
-        arr.clear();
-        System.out.println(arr);
+//        for(String str : arr.toArray()){
+//            System.out.println(str);
+//        }
+//
+//        System.out.println();
+//
+//        arr.add(1, "Morgan");
+//        for(String str : arr.toArray()){
+//            System.out.println(str);
+//        }
+//        System.out.println();
+//        arr.set(0, "Guten");
+//        for(String str : arr.toArray()){
+//            System.out.println(str);
+//        }
+        for(String str : arr.toArray()){
+            System.out.println(str);
+        }
+        System.out.println();
+        System.out.println("Удален: " + arr.remove("Hello"));
+        System.out.println();
+        for(String str : arr.toArray()){
+            System.out.println(str);
+        }
+//        System.out.println();
+
+//        System.out.println("Удален: " + arr.remove(2));
+//        System.out.println();
+//        for(String str : arr.toArray()){
+//            System.out.println(str);
+//        }
+//        System.out.println();
+//        System.out.println(arr.contains("World"));
+//        System.out.println();
+//        System.out.println(arr.indexOf("World"));
+//        System.out.println();
+//        System.out.println(arr.lastIndexOf("World"));
+//        System.out.println();
+//        System.out.println(arr.get(1));
+//        System.out.println();
+//        System.out.println(arr.equals(arr2));
+//        System.out.println();
+//        System.out.println(arr.size());
+//        System.out.println();
+//        System.out.println(arr.isEmpty());
+//        System.out.println();
+//        arr.clear();
+//        System.out.println();
 
     }
 }

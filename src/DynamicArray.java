@@ -42,14 +42,9 @@ public class DynamicArray implements StringList {
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
-            if (internalArray.length == size) {
-                internalArray = Arrays.copyOf(internalArray, internalArray.length + DEFAULT_SIZE_ARRAY, String[].class);
-                internalArray[size + 1] = item;
-                size++;
-            } else {
-                internalArray[size + 1] = item;
-                size++;
-            }
+            growSize();
+            internalArray[size] = item;
+            size++;
         }
 
         return item;
@@ -63,18 +58,21 @@ public class DynamicArray implements StringList {
             if (index > size || index < 0) {
                 throw new IllegalParamExeption("Going out of range");
             } else {
-                String[] part1 = new String[index];
-                String[] part2 = new String[size - index];
-                System.arraycopy(internalArray, 0, part1, 0, index - 1);
-                part1[index] = item;
-                System.arraycopy(internalArray, index + 1, part2, 0, size - index);
-                internalArray = new String[part1.length + part2.length];
-                System.arraycopy(part1, 0, internalArray, 0, part1.length);
-                System.arraycopy(part2, 0, internalArray, part1.length - 1, part2.length);
+                growSize();
+                System.arraycopy(internalArray, index, internalArray, index + 1, size);
+                internalArray[index] = item;
                 size++;
             }
         }
         return item;
+    }
+
+    public void growSize() {
+        if (internalArray.length - size < 3) {
+            String[] newSize = new String[internalArray.length + DEFAULT_SIZE_ARRAY];
+            System.arraycopy(internalArray, 0, newSize, 0, size);
+            internalArray = newSize;
+        }
     }
 
     @Override
@@ -93,49 +91,33 @@ public class DynamicArray implements StringList {
 
     @Override
     public String remove(String item) throws IllegalParamExeption {
-        String result = null;
-        String[] resultArray = new String[size - 1];
 
+        String result = null;
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
-            int indexResultArray = 0;
-
-            if (Arrays.stream(internalArray).anyMatch(i -> i.equals(item))) {
-                for (int i = 0; i < resultArray.length; i++) {
-                    if (!internalArray[i].equals(item)) {
-                        resultArray[indexResultArray] = internalArray[i];
-                        indexResultArray++;
-                    } else {
-                        size--;
-                        result = item;
-                    }
+            for (int i = 0; i < size; i++) {
+                if (internalArray[i].equals(item)) {
+                    result = remove(i);
                 }
-                internalArray = resultArray;
             }
+        }
+        if (result == null){
+            throw new IllegalParamExeption("Not found element: " + item);
         }
         return result;
     }
 
     @Override
     public String remove(int index) throws IllegalParamExeption {
-        String result = null;
-        String[] resultArray = new String[size - 1];
+        String result;
 
         if (index < 0 || index > size) {
             throw new IllegalParamExeption("Going out of range");
         } else {
-            int indexResultArray = 0;
-            for (int i = 0; i < resultArray.length; i++) {
-                if (i != index) {
-                    resultArray[indexResultArray] = internalArray[i];
-                    indexResultArray++;
-                } else {
-                    size--;
-                    result = internalArray[i];
-                }
-            }
-            internalArray = resultArray;
+                result = internalArray[index];
+                System.arraycopy(internalArray, index + 1, internalArray, index, size);
+            size--;
         }
         return result;
     }
