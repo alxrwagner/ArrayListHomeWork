@@ -56,12 +56,12 @@ public interface StringList {
     // Вернуть элемент или исключение,
     // если выходит за рамки фактического
     // количества элементов.
-    String get(int index);
+    String get(int index) throws IllegalParamExeption;
 
     // Сравнить текущий список с другим.
     // Вернуть true/false или исключение,
     // если передан null.
-    boolean equals(StringList otherList);
+    boolean equals(StringList otherList) throws IllegalParamExeption;
 
     // Вернуть фактическое количество элементов.
     int size();

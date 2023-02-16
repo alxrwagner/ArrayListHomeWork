@@ -4,6 +4,7 @@ import exeptions.IllegalParamExeption;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 public class DynamicArray implements StringList {
     private final int DEFAULT_SIZE_ARRAY = 10;
@@ -42,11 +43,12 @@ public class DynamicArray implements StringList {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
             if (internalArray.length == size) {
-                String[] newArray = Arrays.copyOf(internalArray, internalArray.length + DEFAULT_SIZE_ARRAY, String[].class);
-                internalArray = newArray;
+                internalArray = Arrays.copyOf(internalArray, internalArray.length + DEFAULT_SIZE_ARRAY, String[].class);
                 internalArray[size + 1] = item;
+                size++;
             } else {
                 internalArray[size + 1] = item;
+                size++;
             }
         }
 
@@ -62,13 +64,14 @@ public class DynamicArray implements StringList {
                 throw new IllegalParamExeption("Going out of range");
             } else {
                 String[] part1 = new String[index];
-                String[] part2 = new String[internalArray.length - index];
+                String[] part2 = new String[size - index];
                 System.arraycopy(internalArray, 0, part1, 0, index - 1);
                 part1[index] = item;
-                System.arraycopy(internalArray, index + 1, part2, 0, internalArray.length - index);
+                System.arraycopy(internalArray, index + 1, part2, 0, size - index);
                 internalArray = new String[part1.length + part2.length];
                 System.arraycopy(part1, 0, internalArray, 0, part1.length);
                 System.arraycopy(part2, 0, internalArray, part1.length - 1, part2.length);
+                size++;
             }
         }
         return item;
@@ -91,22 +94,24 @@ public class DynamicArray implements StringList {
     @Override
     public String remove(String item) throws IllegalParamExeption {
         String result = null;
-        String[] resultArray = new String[internalArray.length - 1];
+        String[] resultArray = new String[size - 1];
 
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
             int indexResultArray = 0;
 
-            if (Arrays.stream(internalArray).anyMatch(i -> i == item)) {
+            if (Arrays.stream(internalArray).anyMatch(i -> i.equals(item))) {
                 for (int i = 0; i < resultArray.length; i++) {
                     if (!internalArray[i].equals(item)) {
                         resultArray[indexResultArray] = internalArray[i];
                         indexResultArray++;
                     } else {
+                        size--;
                         result = item;
                     }
                 }
+                internalArray = resultArray;
             }
         }
         return result;
@@ -115,48 +120,76 @@ public class DynamicArray implements StringList {
     @Override
     public String remove(int index) throws IllegalParamExeption {
         String result = null;
-        String[] resultArray = new String[internalArray.length - 1];
+        String[] resultArray = new String[size - 1];
 
-        if (index < 0 || index > size){
+        if (index < 0 || index > size) {
             throw new IllegalParamExeption("Going out of range");
-        }else {
+        } else {
             int indexResultArray = 0;
-            for (int i = 0; i < resultArray.length; i++){
-                if (i != index){
+            for (int i = 0; i < resultArray.length; i++) {
+                if (i != index) {
                     resultArray[indexResultArray] = internalArray[i];
                     indexResultArray++;
-                }
-                else{
+                } else {
+                    size--;
                     result = internalArray[i];
                 }
             }
+            internalArray = resultArray;
         }
         return result;
     }
 
     @Override
     public boolean contains(String item) {
-        return false;
+        return Arrays.stream(internalArray).anyMatch(s -> s.equals(item));
     }
 
     @Override
     public int indexOf(String item) {
-        return 0;
+        for (int i = 0; i < size; i++) {
+            if (internalArray[i].equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(String item) {
-        return 0;
+        if (!isEmpty()) {
+            for (int i = size - 1; i >= 0; i--) {
+                if (internalArray[i].equals(item)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
-    public String get(int index) {
-        return null;
+    public String get(int index) throws IllegalParamExeption {
+        if (index < 0 || index > size) {
+            throw new IllegalParamExeption("Going out of range");
+        } else {
+            return internalArray[index];
+        }
     }
 
     @Override
-    public boolean equals(StringList otherList) {
-        return false;
+    public boolean equals(StringList otherList) throws IllegalParamExeption {
+        if (otherList == null) {
+            throw new IllegalParamExeption("The list cannot be null");
+        } else if (size != otherList.size()) {
+            return false;
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (!internalArray[i].equals(otherList.get(i))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -166,16 +199,22 @@ public class DynamicArray implements StringList {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return !(size > 0);
     }
 
     @Override
     public void clear() {
-
+        for (int i = 0; i < size; i++) {
+            internalArray[i] = null;
+        }
+        size = 0;
     }
 
     @Override
     public String[] toArray() {
-        return new String[0];
+        String[] array = new String[size];
+        System.arraycopy(internalArray, 0, array, 0, size);
+
+        return array;
     }
 }
