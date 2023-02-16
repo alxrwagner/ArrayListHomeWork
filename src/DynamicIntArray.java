@@ -3,42 +3,40 @@ import exeptions.IllegalParamExeption;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
 
-public class DynamicArray<T> implements StringList<String> {
+public class DynamicIntArray<T> implements StringList<Integer> {
     private final int DEFAULT_SIZE_ARRAY = 10;
     private int size;
 
-    private String[] internalArray;
+    private Integer[] internalArray;
 
-    public DynamicArray() {
-        internalArray = new String[DEFAULT_SIZE_ARRAY];
+    public DynamicIntArray() {
+        internalArray = new Integer[DEFAULT_SIZE_ARRAY];
     }
 
-    public DynamicArray(int initialSize) throws IllegalParamExeption {
+    public DynamicIntArray(int initialSize) throws IllegalParamExeption {
         if (initialSize > 0) {
-            internalArray = new String[initialSize];
+            internalArray = new Integer[initialSize];
         } else if (initialSize == 0) {
-            internalArray = new String[DEFAULT_SIZE_ARRAY];
+            internalArray = new Integer[DEFAULT_SIZE_ARRAY];
         } else {
             throw new IllegalParamExeption("Illegal size " + initialSize);
         }
     }
 
-    public DynamicArray(Collection<String> initialArray) {
+    public DynamicIntArray(Collection<String> initialArray) {
         Object[] array = initialArray.toArray();
 
         if (array.length > 0) {
             size = array.length;
-            internalArray = Arrays.copyOf(array, size, String[].class);
+            internalArray = Arrays.copyOf(array, size, Integer[].class);
         } else {
-            internalArray = new String[DEFAULT_SIZE_ARRAY];
+            internalArray = new Integer[DEFAULT_SIZE_ARRAY];
         }
     }
 
     @Override
-    public String add(String item) throws IllegalParamExeption {
+    public Integer add(Integer item) throws IllegalParamExeption {
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
@@ -51,7 +49,7 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public String add(int index, String item) throws IllegalParamExeption {
+    public Integer add(int index, Integer item) throws IllegalParamExeption {
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
@@ -69,14 +67,14 @@ public class DynamicArray<T> implements StringList<String> {
 
     public void growSize() {
         if (internalArray.length - size < 3) {
-            String[] newSize = new String[internalArray.length + DEFAULT_SIZE_ARRAY];
+            Integer[] newSize = new Integer[internalArray.length + DEFAULT_SIZE_ARRAY];
             System.arraycopy(internalArray, 0, newSize, 0, size);
             internalArray = newSize;
         }
     }
 
     @Override
-    public String set(int index, String item) throws IllegalParamExeption {
+    public Integer set(int index, Integer item) throws IllegalParamExeption {
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
@@ -90,9 +88,9 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public String remove(String item) throws IllegalParamExeption {
+    public Integer remove(Integer item) throws IllegalParamExeption {
 
-        String result = null;
+        Integer result = null;
         if (item == null) {
             throw new IllegalParamExeption("The element being added cannot be null");
         } else {
@@ -109,8 +107,8 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public String remove(int index) throws IllegalParamExeption {
-        String result;
+    public Integer remove(int index) throws IllegalParamExeption {
+        Integer result;
 
         if (index < 0 || index > size) {
             throw new IllegalParamExeption("Going out of range");
@@ -123,12 +121,12 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public boolean contains(String item) {
-        return Arrays.stream(internalArray).anyMatch(s -> s.equals(item));
+    public boolean contains(Integer item) {
+        return Arrays.stream(internalArray).anyMatch(n -> n.equals(item));
     }
 
     @Override
-    public int indexOf(String item) {
+    public int indexOf(Integer item) {
         for (int i = 0; i < size; i++) {
             if (internalArray[i].equals(item)) {
                 return i;
@@ -138,7 +136,7 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Integer item) {
         if (!isEmpty()) {
             for (int i = size - 1; i >= 0; i--) {
                 if (internalArray[i].equals(item)) {
@@ -150,7 +148,7 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public String get(int index) throws IllegalParamExeption {
+    public Integer get(int index) throws IllegalParamExeption {
         if (index < 0 || index > size) {
             throw new IllegalParamExeption("Going out of range");
         } else {
@@ -159,7 +157,7 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public boolean equals(StringList otherList) throws IllegalParamExeption {
+    public boolean equals(StringList<Integer> otherList) throws IllegalParamExeption {
         if (otherList == null) {
             throw new IllegalParamExeption("The list cannot be null");
         } else if (size != otherList.size()) {
@@ -193,10 +191,22 @@ public class DynamicArray<T> implements StringList<String> {
     }
 
     @Override
-    public String[] toArray() {
-        String[] array = new String[size];
+    public Integer[] toArray() {
+        Integer[] array = new Integer[size];
         System.arraycopy(internalArray, 0, array, 0, size);
 
         return array;
+    }
+
+    private void sortInsertion(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int temp = arr[i];
+            int j = i;
+            while (j > 0 && arr[j - 1] >= temp) {
+                arr[j] = arr[j - 1];
+                j--;
+            }
+            arr[j] = temp;
+        }
     }
 }
