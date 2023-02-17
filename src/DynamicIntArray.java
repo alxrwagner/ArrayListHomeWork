@@ -100,7 +100,7 @@ public class DynamicIntArray<T> implements StringList<Integer> {
                 }
             }
         }
-        if (result == null){
+        if (result == null) {
             throw new IllegalParamExeption("Not found element: " + item);
         }
         return result;
@@ -113,8 +113,8 @@ public class DynamicIntArray<T> implements StringList<Integer> {
         if (index < 0 || index > size) {
             throw new IllegalParamExeption("Going out of range");
         } else {
-                result = internalArray[index];
-                System.arraycopy(internalArray, index + 1, internalArray, index, size);
+            result = internalArray[index];
+            System.arraycopy(internalArray, index + 1, internalArray, index, size);
             size--;
         }
         return result;
@@ -122,7 +122,8 @@ public class DynamicIntArray<T> implements StringList<Integer> {
 
     @Override
     public boolean contains(Integer item) {
-        return Arrays.stream(internalArray).anyMatch(n -> n.equals(item));
+        sortInsertion();
+        return binarySearch(item);
     }
 
     @Override
@@ -192,21 +193,39 @@ public class DynamicIntArray<T> implements StringList<Integer> {
 
     @Override
     public Integer[] toArray() {
-        Integer[] array = new Integer[size];
-        System.arraycopy(internalArray, 0, array, 0, size);
-
-        return array;
+        return Arrays.copyOf(internalArray, size);
     }
 
-    private void sortInsertion(int[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            int temp = arr[i];
+    private boolean binarySearch(int num) {
+        int min = 0;
+        int max = internalArray[internalArray.length - 1];
+
+        while (min <= max) {
+            int mid = (min + max) / 2;
+
+            if (internalArray[mid] == num) {
+                return true;
+            }
+
+            if (num < internalArray[mid]) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+        return false;
+    }
+
+    private void sortInsertion() {
+        for (int i = 1; i < internalArray.length; i++) {
             int j = i;
-            while (j > 0 && arr[j - 1] >= temp) {
-                arr[j] = arr[j - 1];
+            int num = internalArray[i];
+
+            while (j > 0 & internalArray[j - 1] >= num) {
+                internalArray[j] = internalArray[j - 1];
                 j--;
             }
-            arr[j] = temp;
+            internalArray[j] = num;
         }
     }
 }

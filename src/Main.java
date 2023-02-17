@@ -17,18 +17,19 @@ public class Main {
         for (int i = 0; i < 100000; i++) {
             nums[i] = rand.nextInt(100000);
         }
-//        int[] nums2 = Arrays.copyOf(nums, );
+        int[] nums2 = Arrays.copyOf(nums, nums.length);
+        int[] nums3 = Arrays.copyOf(nums, nums.length);
 
         long start = System.currentTimeMillis();
         sortBubble(nums);
         System.out.println(System.currentTimeMillis() - start);
 
         long start2 = System.currentTimeMillis();
-        sortSelection(nums);
+        sortSelection(nums2);
         System.out.println(System.currentTimeMillis() - start2);
 
         long start3 = System.currentTimeMillis();
-        sortInsertion(nums);
+        sortInsertion(nums3);
         System.out.println(System.currentTimeMillis() - start3);
 
     }
